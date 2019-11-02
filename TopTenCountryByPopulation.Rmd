@@ -1,0 +1,104 @@
+---
+title: "Top Ten Countries by population"
+author: "Chinasa Ndukwe"
+date: "01/11/2019"
+---
+# Top ten most populated countries in october 2019.
+
+This page compares world ten (10) most populated countries in the world in October 2019.
+The source data come's from [wordometers].
+
+This plot is generated with [plotly].
+
+
+```{r, echo=FALSE, comment=FALSE, warning=FALSE, results='hide'}
+# Load the plotly library
+library(plotly)
+#Loading the data
+#The data will be downloaded if not found in the folder
+#Download the data
+dataUrl <- "https://raw.githubusercontent.com/Chinasa1/DataProductsWeek3/master/TopTenCountryByPopulation.csv"
+
+fileName <- "TopTenCountryByPopulation.csv"
+
+if(!file.exists(fileName)){
+  download.file(dataUrl, fileName, method = "curl")
+}
+
+
+#read the data
+countries <- read.csv(fileName, sep=";")
+
+#Let check the content of the data
+head(countries)
+
+#Let check the structure of the data
+str(countries)
+```
+
+```{r, echo=FALSE, comment=FALSE, warning=FALSE}
+#Plot the countries by their fertility rate
+p1 <- plot_ly(data = countries,
+              x = ~Fertility_Rate, 
+              y = ~reorder(Country, Fertility_Rate), 
+              name = 'Top ten countries by fertility rates in %',
+              type = 'bar', 
+              orientation = 'h',
+              marker = list(color = 'rgba(50, 171, 96, 0.6)',
+                            line = list(color = 'rgba(50, 171, 96, 1.0)', width = 1))) %>%
+  layout(yaxis = list(showgrid = FALSE, showline = FALSE, showticklabels = TRUE, domain= c(0, 0.85)),
+         xaxis = list(zeroline = FALSE, showline = FALSE, showticklabels = TRUE, showgrid = TRUE)) %>%
+  add_annotations(xref = 'x1', yref = 'y',
+                  x = countries$Fertility_Rate * 2.1 + 3,  y = countries$Country,
+                  text = paste(round(countries$Fertility_Rate, 2), '%'),
+                  font = list(family = 'Arial', size = 12, color = 'rgb(50, 171, 96)'),
+                  showarrow = FALSE)
+#Plot the countries by population in scatter plot
+p2 <- plot_ly(data= countries, 
+              x = ~Population, 
+              y = ~reorder(Country,Fertility_Rate ), 
+              name = 'Top ten world population in Billion',
+              type = 'scatter', mode = 'lines+markers',
+              line = list(color = 'rgb(128, 0, 128)')) %>%
+  layout(yaxis = list(showgrid = FALSE, 
+                      showline = TRUE, 
+                      showticklabels = FALSE,
+                      linecolor = 'rgba(102, 102, 102, 0.8)', 
+                      linewidth = 2,
+                      domain = c(0, 0.85)),
+         xaxis = list(zeroline = FALSE, 
+                      showline = FALSE, 
+                      showticklabels = TRUE, 
+                      showgrid = TRUE,
+                      side = 'top', 
+                      dtick = 100000000)) 
+  
+#Plot the two different plot aside
+p <- subplot(p1, p2) %>%
+  layout(title = 'Fertility rate & population of world top ten countries',
+         legend = list(x = 0.029, 
+                       y = 1.038,
+                       font = list(size = 10)),
+         margin = list(l = 100, 
+                       r = 20, 
+                       t = 70, 
+                       b = 70),
+         paper_bgcolor = 'rgb(248, 248, 255)',
+         plot_bgcolor = 'rgb(248, 248, 255)') %>%
+  add_annotations(xref = 'paper', 
+                  yref = 'paper',
+                  x = -0.14, 
+                  y = -0.15,
+                  text = paste('World top ten data in october 2019'),
+                  font = list(family = 'Arial', 
+                              size = 10, 
+                              color = 'rgb(150,150,150)'),
+                  showarrow = FALSE)
+p
+
+
+
+```
+
+[wordometers]: https://www.worldometers.info/world-population/#density
+[plotly]: https://plot.ly/r/
