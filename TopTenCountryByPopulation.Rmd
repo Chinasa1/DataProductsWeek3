@@ -1,6 +1,6 @@
 ---
 title: "Top Ten Countries by population"
-author: "Chinasa Ndukwe"
+
 date: "01/11/2019"
 ---
 # Top ten most populated countries in october 2019.
